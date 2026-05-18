@@ -62,7 +62,7 @@ func (m *MessageAcksSubModel) ShortHelp() []tui.Binding {
 	return []tui.Binding{
 		{Key: "up/k", Description: "Up"},
 		{Key: "down/j", Description: "Down"},
-		{Key: "Enter", Description: "Select"},
+		{Key: "Enter", Description: "Open profile"},
 		{Key: "Esc", Description: "Back"},
 	}
 }
