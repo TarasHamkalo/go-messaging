@@ -11,9 +11,12 @@ Komunikace mezi všemi komponentami probíhá pomocí gRPC přes TLS.
 
 ---
 
+*Projekt byl vytvořen jako semestrální práce v rámci předmětu NI-GOL na FIT ČVUT. Ostatní úlohy 
+z předmětu jsou dostupné v [původním repozitáři](https://github.com/TarasHamkalo/go-tasks).* 
+
 ## 1. Implementované funkce
 
-### Povinná část
+### Základní funkce
 * **Registrace uživatelů**: Generování a využití unikátního 9místného `UserID` (viz `internal/profiles`).
 * **Autentizace a přihlášení**: Přihlášení pomocí UserID a hesla. Bezpečné ukládání hesel pomocí `bcrypt` hashů na straně profilového serveru.
 * **Správa tokenů (JWT)**: Autentizace pomocí asymetricky podepsaných JWT tokenů (`RS256`). Využití dvojice krátkodobého access tokenu (platnost 1 hodina) a dlouhodobého refresh tokenu (platnost 7 dní) (viz `internal/auth`).
@@ -23,7 +26,7 @@ Komunikace mezi všemi komponentami probíhá pomocí gRPC přes TLS.
 * **Znovupřipojení**: 
   * Automatická obnova gRPC streamů a připojení po výpadku sítě (viz `internal/client/tui` a `tui/models/chat_model.go`).
 
-### Volitelné funkce
+### Další implementované funkce
 * **Presence**: Sledování stavů online/offline a podpora režimu neviditelnosti (**Invisible Mode**).
 * **Skupinové chaty**: Vytváření skupin, příhlasení členů, odhod členu.
 * **Potvrzení o doručení a přečtení**: Sledování životního cyklu zprávy (doručení a zobrazení u příjemců).
@@ -150,14 +153,17 @@ UI je modulární, rozdělené na hlavní kořenový model a izolované submodel
 
 ### Spuštění projektu
 ```bash
-# 1. Kompilace všech komponent
+# 1. Generování JWT a TLS klíčů, a lolalhost certifikátu
+./scripts/generate-keys.sh
+
+# 2. Kompilace všech komponent
 ./scripts/build.sh
 
-# 2. Spuštění serverovů
+# 3. Spuštění serverovů
 ./scripts/profile-server.sh
 ./scripts/messaging-server.sh
 
-# 3. Spuštění nezávislých klientských instancí
+# 4. Spuštění nezávislých klientských instancí
 ./scripts/client.sh c1 # Instance 1: data v data/c1, logy v logs/c1
 ./scripts/client.sh c2 # Instance 2: data v data/c2, logy v logs/c2
 ```
@@ -173,5 +179,5 @@ UI je modulární, rozdělené na hlavní kořenový model a izolované submodel
   - `tui/` – terminálové uživatelské rozhraní.
 - `protos/` – definice gRPC služeb.
 - `generated/` – automaticky vygenerovaný Go kód z `.proto` souborů.
-- `resources/` – TLS certifikáty a JWT klíče.
+- `resources/` – TLS certifikáty a JWT klíče, (viz `./scripts/generate-keys.sh`).
 - `scripts/` – build a spouštěcí skripty.
